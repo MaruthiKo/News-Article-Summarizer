@@ -1,0 +1,7 @@
+requests
+newspaper3k
+langchain
+openai
+deeplake
+tiktoken
+python-dotenv
