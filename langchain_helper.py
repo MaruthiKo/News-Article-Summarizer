@@ -1,35 +1,50 @@
 from article_extractor import get_article
-from langchain.schema import HumanMessage
-from langchain.chat_models import ChatOpenAI
+from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
 from api_key import get_api_key
-
+from Output_Parser import get_parser
 
 OPENAI_API_KEY = get_api_key("../../.env")
 
-
+## getting an Article 
 article_url = "https://edition.cnn.com/2023/11/03/investing/who-is-sam-bankman-fried-ftx-fraud-trial/index.html"
 article = get_article(article_url)
 
 article_title = article.title
 article_text = article.text
 
-template = """You are a very good assistant that summarizes online articles.
+## Getting the parser
 
-Here's the article you want to summarize.
+parser = get_parser()
+
+template = """
+As an advanced AI who specialises in summarizing news articles, you've been tasked to summarize online news articles into bulleted points. 
+
+Here's the article you need to summarize:
 
 ==================
 Title: {article_title}
 
 {article_text}
 ==================
-
-Write a summary of the previous article.Ensure the summary has the main points of the article. The summary should be concise and easy to understand.
+{format_instructions}
 """
-prompt = template.format(article_title=article.title, article_text=article.text)
 
-messages = [HumanMessage(content=prompt)]
+prompt = PromptTemplate(
+    template=template,
+    input_variables= ["article_title", "article_test"],
+    partial_variables= {"format_instructions": parser.get_format_instructions()}    
+)
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=OPENAI_API_KEY)
+# format the prompt with the input variables
+formatted_prompt = prompt.format_prompt(article_title=article_title, article_text=article_text) 
 
-summary = chat(messages)
-print(summary.content)
+# Instatiate the LLM
+model = OpenAI(model_name="text-davinci-003", temperature=0.1, openai_api_key=OPENAI_API_KEY)
+
+# Output
+output = model(formatted_prompt.to_string())
+
+# Parse the output
+parsed_output = parser.parse(output)
+print(parsed_output)

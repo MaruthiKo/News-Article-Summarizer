@@ -4,4 +4,4 @@ In today's fast-paced world, it's essential to stay updated with the latest news
 
 ## Architecture
 
-[News Article Summarizer Architecture](news_article.jpg)
+![News Article Summarizer Architecture](news_article.jpg)

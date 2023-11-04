@@ -22,4 +22,8 @@ def get_article(article_url):
         else:
             print(f"Failed to fetch article at {article_url}")
     except Exception as e:
-        print(f"Error occured while fetching data at {article_url}")
+        print(f"Error occured while fetching data at {article_url}: {e}")
+
+# article = get_article("https://edition.cnn.com/2023/11/03/investing/who-is-sam-bankman-fried-ftx-fraud-trial/index.html")
+# print(article.title)
+# print(article.text)
